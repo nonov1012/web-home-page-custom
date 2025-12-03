@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Page d'Accueil</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Boutons de contrôle -->
+    <div class="control-buttons">
+        <button id="editModeBtn" class="control-btn" title="Mode édition">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+        </button>
+        <button id="settingsBtn" class="control-btn" title="Paramètres">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 1v6m0 6v6m-9-9h6m6 0h6"></path>
+                <path d="M19.07 4.93l-4.24 4.24M9.17 14.83l-4.24 4.24M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Menu de personnalisation (caché par défaut) -->
+    <div id="settingsPanel" class="settings-panel">
+        <div class="settings-header">
+            <h2>Personnalisation</h2>
+            <button id="closeSettings" class="close-btn">&times;</button>
+        </div>
+
+        <div class="settings-content">
+            <!-- Configuration de la grille -->
+            <section class="settings-section">
+                <h3>Grille</h3>
+                <div class="setting-item">
+                    <label for="columns">Colonnes: <span id="columnsValue">12</span></label>
+                    <input type="range" id="columns" min="6" max="24" value="12">
+                </div>
+                <div class="setting-item">
+                    <label for="rows">Lignes: <span id="rowsValue">10</span></label>
+                    <input type="range" id="rows" min="5" max="20" value="10">
+                </div>
+                <div class="setting-item">
+                    <label for="gap">Espacement (px): <span id="gapValue">8</span></label>
+                    <input type="range" id="gap" min="0" max="30" value="8">
+                </div>
+            </section>
+
+            <!-- Configuration de l'apparence -->
+            <section class="settings-section">
+                <h3>Apparence</h3>
+                <div class="setting-item">
+                    <label for="bgColor">Couleur de fond:</label>
+                    <input type="color" id="bgColor" value="#1a1a2e">
+                </div>
+                <div class="setting-item">
+                    <label for="bgImage">Image de fond (URL):</label>
+                    <input type="text" id="bgImage" placeholder="https://...">
+                </div>
+                <div class="setting-item">
+                    <label for="widgetColor">Couleur des widgets:</label>
+                    <input type="color" id="widgetColor" value="#16213e">
+                </div>
+                <div class="setting-item">
+                    <label for="widgetOpacity">Opacité des widgets: <span id="opacityValue">0.9</span></label>
+                    <input type="range" id="widgetOpacity" min="0" max="100" value="90">
+                </div>
+                <div class="setting-item">
+                    <label for="widgetRadius">Arrondi des widgets (px): <span id="radiusValue">8</span></label>
+                    <input type="range" id="widgetRadius" min="0" max="30" value="8">
+                </div>
+            </section>
+
+            <!-- Liste des widgets disponibles -->
+            <section class="settings-section">
+                <h3>Ajouter un widget</h3>
+                <div class="widgets-list">
+                    <button class="add-widget-btn" data-widget="search">
+                        <span class="widget-icon">🔍</span>
+                        Barre de recherche
+                    </button>
+                    <button class="add-widget-btn" data-widget="bookmarks">
+                        <span class="widget-icon">⭐</span>
+                        Favoris
+                    </button>
+                    <button class="add-widget-btn" data-widget="weather">
+                        <span class="widget-icon">🌤️</span>
+                        Météo
+                    </button>
+                    <button class="add-widget-btn" data-widget="clock">
+                        <span class="widget-icon">🕐</span>
+                        Horloge
+                    </button>
+                    <button class="add-widget-btn" data-widget="notes">
+                        <span class="widget-icon">📝</span>
+                        Notes
+                    </button>
+                    <button class="add-widget-btn" data-widget="rss">
+                        <span class="widget-icon">📰</span>
+                        Flux RSS
+                    </button>
+                    <button class="add-widget-btn" data-widget="iframe">
+                        <span class="widget-icon">🖼️</span>
+                        iFrame personnalisé
+                    </button>
+                    <button class="add-widget-btn" data-widget="calendar">
+                        <span class="widget-icon">📅</span>
+                        Calendrier
+                    </button>
+                </div>
+            </section>
+
+            <!-- Réinitialisation -->
+            <section class="settings-section">
+                <button id="resetBtn" class="reset-btn">Réinitialiser tout</button>
+                <button id="exportBtn" class="export-btn">Exporter la configuration</button>
+                <button id="importBtn" class="export-btn">Importer la configuration</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;">
+            </section>
+        </div>
+    </div>
+
+    <!-- Grille principale pour les widgets -->
+    <div id="gridContainer" class="grid-container"></div>
+
+    <!-- Template pour les widgets -->
+    <template id="widgetTemplate">
+        <div class="widget" draggable="false">
+            <div class="widget-controls">
+                <button class="widget-control color-btn" title="Couleur">🎨</button>
+                <button class="widget-control delete-btn" title="Supprimer">✕</button>
+            </div>
+            <div class="widget-content"></div>
+            <div class="resize-handle"></div>
+        </div>
+    </template>
+
+    <!-- Modal pour éditer les couleurs du widget -->
+    <div id="colorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Personnaliser le widget</h3>
+            </div>
+            <div class="modal-body">
+                <label>Couleur de fond:</label>
+                <input type="color" id="modalBgColor" class="modal-input">
+                <label>Opacité:</label>
+                <input type="range" id="modalOpacity" class="modal-input" min="0" max="100" value="90">
+                <span id="modalOpacityValue">0.9</span>
+                <label>Couleur de bordure:</label>
+                <input type="color" id="modalBorderColor" class="modal-input">
+                <label>Épaisseur de bordure (px):</label>
+                <input type="range" id="modalBorderWidth" class="modal-input" min="0" max="10" value="0">
+                <span id="modalBorderWidthValue">0</span>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-primary" id="saveColorBtn">Sauvegarder</button>
+                <button class="modal-btn modal-btn-secondary" id="cancelColorBtn">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour éditer les favoris -->
+    <div id="bookmarkModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="bookmarkModalTitle">Ajouter un favori</h3>
+            </div>
+            <div class="modal-body">
+                <label>Nom:</label>
+                <input type="text" id="bookmarkName" class="modal-input" placeholder="Mon site">
+                <label>URL:</label>
+                <input type="text" id="bookmarkUrl" class="modal-input" placeholder="https://...">
+                <label>Icône (optionnel):</label>
+                <input type="text" id="bookmarkIcon" class="modal-input" placeholder="URL de l'icône ou emoji">
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-primary" id="saveBookmarkBtn">Sauvegarder</button>
+                <button class="modal-btn modal-btn-secondary" id="cancelBookmarkBtn">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour la configuration des favoris -->
+    <div id="bookmarkConfigModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Configuration des favoris</h3>
+            </div>
+            <div class="modal-body">
+                <label>Taille des icônes (px): <span id="bookmarkSizeValue">48</span></label>
+                <input type="range" id="bookmarkSize" class="modal-input" min="24" max="96" value="48">
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-primary" id="saveBookmarkConfigBtn">Sauvegarder</button>
+                <button class="modal-btn modal-btn-secondary" id="cancelBookmarkConfigBtn">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

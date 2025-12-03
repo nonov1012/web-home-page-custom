@@ -1,0 +1,912 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    background-color: #1a1a2e;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #eee;
+}
+
+/* Boutons de contrôle */
+.control-buttons {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+}
+
+.control-btn {
+    background: rgba(22, 33, 62, 0.9);
+    border: none;
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.control-btn:hover {
+    background: rgba(15, 76, 117, 0.9);
+    transform: scale(1.1);
+}
+
+.control-btn.active {
+    background: rgba(15, 76, 117, 0.9);
+    transform: rotate(90deg);
+}
+
+#editModeBtn.active {
+    background: #0f4c75;
+    box-shadow: 0 0 20px rgba(15, 76, 117, 0.5);
+}
+
+/* Panel de paramètres */
+.settings-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: rgba(22, 33, 62, 0.98);
+    backdrop-filter: blur(10px);
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+}
+
+.settings-panel.open {
+    right: 0;
+}
+
+.settings-panel.collapsed {
+    right: -400px;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    background: rgba(22, 33, 62, 0.98);
+    z-index: 10;
+}
+
+.settings-header h2 {
+    color: #fff;
+    font-size: 24px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 36px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    transform: scale(1.2);
+}
+
+.settings-content {
+    padding: 20px;
+}
+
+.settings-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-section:last-child {
+    border-bottom: none;
+}
+
+.settings-section h3 {
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.setting-item {
+    margin-bottom: 15px;
+}
+
+.setting-item label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.setting-item input[type="range"] {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    cursor: pointer;
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #0f4c75;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.setting-item input[type="range"]::-webkit-slider-thumb:hover {
+    background: #1b6ca8;
+}
+
+.setting-item input[type="color"] {
+    width: 100%;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.setting-item input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.setting-item input[type="text"]:focus {
+    outline: none;
+    border-color: #0f4c75;
+}
+
+/* Liste des widgets à ajouter */
+.widgets-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.add-widget-btn {
+    background: rgba(15, 76, 117, 0.6);
+    border: 2px solid rgba(15, 76, 117, 0.8);
+    color: #fff;
+    padding: 15px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+    font-size: 12px;
+}
+
+.add-widget-btn:hover {
+    background: rgba(15, 76, 117, 0.8);
+    transform: translateY(-2px);
+}
+
+.widget-icon {
+    font-size: 24px;
+}
+
+/* Boutons de réinitialisation et export */
+.reset-btn,
+.export-btn {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.reset-btn {
+    background: #c23616;
+    color: #fff;
+}
+
+.reset-btn:hover {
+    background: #e84118;
+}
+
+.export-btn {
+    background: #0f4c75;
+    color: #fff;
+}
+
+.export-btn:hover {
+    background: #1b6ca8;
+}
+
+/* Grille principale */
+.grid-container {
+    display: grid;
+    width: 100vw;
+    height: 100vh;
+    padding: 10px;
+    gap: 8px;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+}
+
+.grid-container.edit-mode {
+    background-image:
+        repeating-linear-gradient(0deg, transparent 0px, transparent calc((100vh - 20px) / var(--grid-rows) - 1px), rgba(15, 76, 117, 0.3) calc((100vh - 20px) / var(--grid-rows) - 1px), rgba(15, 76, 117, 0.3) calc((100vh - 20px) / var(--grid-rows))),
+        repeating-linear-gradient(90deg, transparent 0px, transparent calc((100vw - 20px) / var(--grid-cols) - 1px), rgba(15, 76, 117, 0.3) calc((100vw - 20px) / var(--grid-cols) - 1px), rgba(15, 76, 117, 0.3) calc((100vw - 20px) / var(--grid-cols)));
+    background-size: 100% 100%;
+    --grid-cols: 12;
+    --grid-rows: 10;
+}
+
+/* Widgets */
+.widget {
+    background: rgba(22, 33, 62, 0.9);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.2s;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.widget:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.edit-mode .widget {
+    cursor: move;
+    border: 2px dashed rgba(15, 76, 117, 0.5);
+}
+
+.widget.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+    z-index: 1000;
+}
+
+.widget.occupied-position {
+    border-color: rgba(255, 0, 0, 0.7) !important;
+}
+
+/* Contrôles des widgets (sans header) */
+.widget-controls {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    display: none;
+    gap: 5px;
+    z-index: 10;
+}
+
+.edit-mode .widget-controls {
+    display: flex;
+}
+
+.widget-control {
+    background: rgba(22, 33, 62, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.widget-control:hover {
+    transform: scale(1.1);
+    background: rgba(15, 76, 117, 0.95);
+}
+
+.delete-btn:hover {
+    background: rgba(194, 54, 22, 0.95);
+    border-color: #c23616;
+}
+
+.color-btn:hover {
+    background: rgba(155, 89, 182, 0.95);
+}
+
+.widget-content {
+    flex: 1;
+    overflow: auto;
+    color: #ccc;
+    width: 100%;
+    height: 100%;
+}
+
+/* Handle de redimensionnement */
+.resize-handle {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    cursor: nwse-resize;
+    background: linear-gradient(135deg, transparent 50%, rgba(15, 76, 117, 0.7) 50%);
+    border-bottom-right-radius: 8px;
+}
+
+.edit-mode .resize-handle {
+    display: block;
+}
+
+/* Styles spécifiques aux widgets */
+
+/* Widget Recherche */
+.widget.search-widget .widget-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    justify-content: center;
+    overflow: visible;
+}
+
+.search-box {
+    display: flex;
+    gap: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.search-box:focus-within {
+    border-color: #0f4c75;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.search-engine-select {
+    padding: 12px 15px;
+    background: rgba(15, 76, 117, 0.3);
+    border: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+}
+
+.search-engine-select option {
+    background: #16213e;
+    color: #fff;
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px 15px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+}
+
+.search-input:focus {
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.search-btn {
+    padding: 12px 20px;
+    background: #0f4c75;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.2s;
+}
+
+.search-btn:hover {
+    background: #1b6ca8;
+}
+
+/* Widget Favoris */
+.bookmarks-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+}
+
+.bookmarks-grid {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+    height: calc(100% - 40px);
+    overflow: visible;
+    padding: 5px;
+    grid-auto-rows: min-content;
+}
+
+.bookmark-item-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.bookmark-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    color: #ccc;
+    transition: transform 0.2s;
+}
+
+.bookmark-item:hover {
+    transform: scale(1.05);
+}
+
+.bookmark-icon {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    overflow: hidden;
+}
+
+.bookmark-icon img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+}
+
+.bookmark-name {
+    font-size: 11px;
+    text-align: center;
+    word-break: break-word;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.bookmark-controls {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    display: none;
+    gap: 3px;
+    z-index: 5;
+}
+
+.edit-mode .bookmark-controls {
+    display: flex;
+}
+
+.bookmark-control-btn {
+    background: rgba(22, 33, 62, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.bookmark-control-btn:hover {
+    background: rgba(15, 76, 117, 0.95);
+    transform: scale(1.1);
+}
+
+.bookmark-control-btn.delete:hover {
+    background: rgba(194, 54, 22, 0.95);
+}
+
+.bookmarks-footer {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.add-bookmark-btn,
+.config-bookmark-btn {
+    flex: 1;
+    padding: 8px;
+    background: rgba(15, 76, 117, 0.5);
+    border: 2px dashed rgba(15, 76, 117, 0.8);
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.add-bookmark-btn:hover,
+.config-bookmark-btn:hover {
+    background: rgba(15, 76, 117, 0.7);
+}
+
+/* Widget Météo */
+.weather-widget .widget-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.weather-location {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.weather-icon {
+    font-size: 64px;
+}
+
+.weather-temp {
+    font-size: 48px;
+    font-weight: 300;
+}
+
+.weather-description {
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.weather-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.weather-detail {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.weather-detail-label {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.weather-detail-value {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+/* Widget Horloge */
+.clock-widget .widget-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.clock-time {
+    font-size: 48px;
+    font-weight: 300;
+    font-variant-numeric: tabular-nums;
+}
+
+.clock-date {
+    font-size: 18px;
+    opacity: 0.7;
+}
+
+/* Widget Notes */
+.notes-textarea {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: none;
+}
+
+.notes-textarea:focus {
+    outline: none;
+    border-color: #0f4c75;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Widget iFrame */
+.iframe-widget .widget-content {
+    padding: 0;
+    height: 100%;
+}
+
+.iframe-content {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 4px;
+}
+
+/* Widget RSS */
+.rss-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rss-item {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.rss-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.rss-item-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #fff;
+}
+
+.rss-item-description {
+    font-size: 13px;
+    opacity: 0.8;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.rss-item-date {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: 5px;
+}
+
+/* Widget Calendrier */
+.calendar-widget .widget-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.calendar-nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.calendar-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.calendar-month-year {
+    font-weight: 600;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-day-header,
+.calendar-day {
+    text-align: center;
+    padding: 8px 4px;
+    font-size: 13px;
+}
+
+.calendar-day-header {
+    font-weight: 600;
+    opacity: 0.7;
+}
+
+.calendar-day {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.calendar-day:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.calendar-day.today {
+    background: #0f4c75;
+    font-weight: 600;
+}
+
+.calendar-day.other-month {
+    opacity: 0.3;
+}
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Modal pour les configurations */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: #16213e;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    color: #fff;
+    font-size: 24px;
+}
+
+.modal-body {
+    margin-bottom: 20px;
+}
+
+.modal-body label {
+    display: block;
+    color: #ccc;
+    margin-bottom: 5px;
+    margin-top: 10px;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    color: #fff;
+}
+
+.modal-input[type="color"] {
+    height: 40px;
+    padding: 5px;
+}
+
+.modal-input:focus {
+    outline: none;
+    border-color: #0f4c75;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.modal-btn-primary {
+    background: #0f4c75;
+    color: #fff;
+}
+
+.modal-btn-primary:hover {
+    background: #1b6ca8;
+}
+
+.modal-btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.modal-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
