@@ -261,17 +261,17 @@ function updateGridStyles() {
         if (widgetData && widgetData.customStyle) {
             applyCustomWidgetStyle(widget, widgetData.customStyle);
         } else {
-            widget.style.backgroundColor = config.widgetColor;
-            widget.style.opacity = config.widgetOpacity;
+            widget.style.setProperty('--widget-bg-color', config.widgetColor);
+            widget.style.setProperty('--widget-opacity', config.widgetOpacity);
         }
         widget.style.borderRadius = `${config.widgetRadius}px`;
     });
 }
 
 function applyCustomWidgetStyle(widget, style) {
-    widget.style.backgroundColor = style.bgColor;
-    widget.style.opacity = style.opacity;
-    widget.style.border = `${style.borderWidth}px solid ${style.borderColor}`;
+    widget.style.setProperty('--widget-bg-color', style.bgColor);
+    widget.style.setProperty('--widget-opacity', style.opacity);
+    widget.style.setProperty('--widget-border', `${style.borderWidth}px solid ${style.borderColor}`);
 }
 
 // Création de widgets
@@ -311,8 +311,8 @@ function createWidget(type, data) {
     if (data.customStyle) {
         applyCustomWidgetStyle(widget, data.customStyle);
     } else {
-        widget.style.backgroundColor = config.widgetColor;
-        widget.style.opacity = config.widgetOpacity;
+        widget.style.setProperty('--widget-bg-color', config.widgetColor);
+        widget.style.setProperty('--widget-opacity', config.widgetOpacity);
     }
     widget.style.borderRadius = `${config.widgetRadius}px`;
 

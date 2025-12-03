@@ -7,7 +7,7 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red.svg?style=for-the-badge)](https://github.com)
+[![In developpement](https://img.shields.io/badge/Status-En%20développement-orange.svg?style=for-the-badge)](https://github.com)
 
 **Une page d'accueil de navigateur personnalisable et élégante**
 
@@ -50,13 +50,13 @@ Ouvrez simplement votre navigateur et profitez de votre nouvelle page d'accueil 
 
 ## 📸 Aperçu
 
-*Ajoutez des captures d'écran ici pour montrer votre page en action*
+<!-- TODO: mettre des images -->
 
 ---
 
 <div align="center">
 
-**Fait avec ❤️ pour une meilleure expérience de navigation**
+****
 
 </div>
 

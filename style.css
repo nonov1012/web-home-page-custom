@@ -277,7 +277,6 @@ body {
 
 /* Widgets */
 .widget {
-    background: rgba(22, 33, 62, 0.9);
     border-radius: 8px;
     padding: 10px;
     display: flex;
@@ -286,6 +285,22 @@ body {
     transition: all 0.2s;
     position: relative;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    isolation: isolate; /* Crée un nouveau contexte d'empilement */
+}
+
+/* Pseudo-élément pour le fond avec opacité */
+.widget::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--widget-bg-color, rgba(22, 33, 62, 1));
+    border: var(--widget-border, none);
+    border-radius: inherit;
+    opacity: var(--widget-opacity, 0.9);
+    z-index: -1;
 }
 
 .widget:hover {
@@ -294,13 +309,23 @@ body {
 
 .edit-mode .widget {
     cursor: move;
+}
+
+.edit-mode .widget::before {
     border: 2px dashed rgba(15, 76, 117, 0.5);
 }
 
 .widget.dragging {
-    opacity: 0.5;
     cursor: grabbing;
     z-index: 1000;
+}
+
+.widget.dragging::before {
+    opacity: 0.3;
+}
+
+.widget.dragging * {
+    opacity: 0.5;
 }
 
 .widget.occupied-position {
