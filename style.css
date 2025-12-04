@@ -281,7 +281,7 @@ body {
     padding: 10px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible;
     transition: all 0.2s;
     position: relative;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -301,6 +301,7 @@ body {
     border-radius: inherit;
     opacity: var(--widget-opacity, 0.9);
     z-index: -1;
+    overflow: hidden;
 }
 
 .widget:hover {
@@ -339,7 +340,7 @@ body {
     right: -10px;
     display: none;
     gap: 5px;
-    z-index: 10;
+    z-index: 100;
 }
 
 .edit-mode .widget-controls {
@@ -381,6 +382,9 @@ body {
     color: #ccc;
     width: 100%;
     height: 100%;
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
 }
 
 /* Handle de redimensionnement */
@@ -394,6 +398,7 @@ body {
     cursor: nwse-resize;
     background: linear-gradient(135deg, transparent 50%, rgba(15, 76, 117, 0.7) 50%);
     border-bottom-right-radius: 8px;
+    z-index: 100;
 }
 
 .edit-mode .resize-handle {
@@ -414,21 +419,23 @@ body {
 .search-box {
     display: flex;
     gap: 0;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(22, 33, 62, 0.95);
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 25px;
     overflow: hidden;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+    z-index: 1;
 }
 
 .search-box:focus-within {
     border-color: #0f4c75;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(22, 33, 62, 1);
 }
 
 .search-engine-select {
     padding: 12px 15px;
-    background: rgba(15, 76, 117, 0.3);
+    background: rgba(15, 76, 117, 0.5);
     border: none;
     border-right: 1px solid rgba(255, 255, 255, 0.2);
     color: #fff;

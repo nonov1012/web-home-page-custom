@@ -403,6 +403,9 @@ function initSearchWidget(widget, data) {
     const searchBtn = widget.querySelector('.search-btn');
     const engineSelect = widget.querySelector('.search-engine-select');
 
+    // Focus automatique sur la barre de recherche
+    setTimeout(() => input.focus(), 100);
+
     const performSearch = () => {
         const query = input.value.trim();
         if (!query) return;
