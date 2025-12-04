@@ -414,7 +414,7 @@ function initSearchWidget(widget, data) {
             duckduckgo: `https://duckduckgo.com/?q=${encodeURIComponent(query)}`
         };
 
-        window.open(urls[engine], '_blank');
+        window.location.href = urls[engine];
         input.value = '';
     };
 
@@ -443,7 +443,7 @@ function createBookmarksWidget(data) {
     bookmarks.forEach((bookmark, index) => {
         html += `
             <div class="bookmark-item-wrapper">
-                <a href="${bookmark.url}" class="bookmark-item" target="_blank">
+                <a href="${bookmark.url}" class="bookmark-item">
                     <div class="bookmark-icon" style="width: ${iconSize}px; height: ${iconSize}px;">
                         ${bookmark.icon ? (bookmark.icon.startsWith('http') ? `<img src="${bookmark.icon}" alt="${bookmark.name}">` : bookmark.icon) : bookmark.name.charAt(0).toUpperCase()}
                     </div>
