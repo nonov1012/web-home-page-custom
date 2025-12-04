@@ -490,17 +490,20 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
-    overflow: visible;
+    overflow: hidden;
 }
 
 .bookmarks-grid {
     display: grid;
     gap: 10px;
     width: 100%;
-    height: calc(100% - 40px);
-    overflow: visible;
+    height: 100%;
+    overflow: hidden;
     padding: 5px;
     grid-auto-rows: min-content;
+    align-items: center;
+    justify-items: center;
+    align-content: center;
 }
 
 .bookmark-item-wrapper {
@@ -540,15 +543,15 @@ body {
 }
 
 .bookmark-name {
-    font-size: 11px;
     text-align: center;
     word-break: break-word;
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
+    white-space: nowrap;
 }
 
 .bookmark-controls {
@@ -588,27 +591,42 @@ body {
     background: rgba(194, 54, 22, 0.95);
 }
 
-.bookmarks-footer {
+/* Placeholder d'ajout de favori */
+.add-bookmark-placeholder {
+    display: none;
+}
+
+.edit-mode .add-bookmark-placeholder {
     display: flex;
-    gap: 5px;
-    margin-top: 10px;
 }
 
-.add-bookmark-btn,
-.config-bookmark-btn {
-    flex: 1;
-    padding: 8px;
-    background: rgba(15, 76, 117, 0.5);
-    border: 2px dashed rgba(15, 76, 117, 0.8);
-    border-radius: 8px;
-    color: #fff;
+.bookmark-add-item {
     cursor: pointer;
-    font-size: 12px;
+    opacity: 0.6;
 }
 
-.add-bookmark-btn:hover,
-.config-bookmark-btn:hover {
-    background: rgba(15, 76, 117, 0.7);
+.bookmark-add-item .bookmark-icon {
+    background: rgba(15, 76, 117, 0.3);
+    border: 2px dashed rgba(15, 76, 117, 0.6);
+}
+
+.bookmark-add-item:hover {
+    opacity: 1;
+}
+
+.bookmark-add-item:hover .bookmark-icon {
+    background: rgba(15, 76, 117, 0.5);
+    border-color: rgba(15, 76, 117, 0.8);
+}
+
+.add-icon {
+    font-size: 32px;
+    color: rgba(15, 76, 117, 1);
+    font-weight: 300;
+}
+
+.bookmark-add-item:hover .add-icon {
+    color: rgba(27, 108, 168, 1);
 }
 
 /* Widget Météo */

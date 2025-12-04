@@ -365,7 +365,12 @@ function createWidget(type, data) {
     const colorBtn = widget.querySelector('.color-btn');
     colorBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        openColorModal(data.id);
+        // Si c'est un widget bookmarks, ouvrir la config spécifique
+        if (type === 'bookmarks') {
+            openBookmarkConfigModal(data.id);
+        } else {
+            openColorModal(data.id);
+        }
     });
 
     // Drag & Drop
@@ -434,23 +439,71 @@ function initSearchWidget(widget, data) {
 
 function createBookmarksWidget(data) {
     const bookmarks = data.config.bookmarks || [];
-    const iconSize = data.config.iconSize || 48;
+    const baseIconSize = data.config.iconSize || 48;
 
-    // Calculer le nombre de colonnes en fonction de la taille du widget
+    // Calculer dynamiquement le nombre de colonnes et adapter la taille des icônes
     const widgetWidth = data.width;
-    const cols = Math.max(2, Math.floor(widgetWidth * 1.5));
+    const widgetHeight = data.height;
+    const numBookmarks = bookmarks.length;
+
+    // Adapter le nombre de colonnes selon la largeur
+    let cols;
+    if (widgetWidth <= 2) {
+        cols = 1;
+    } else if (widgetWidth <= 3) {
+        cols = 2;
+    } else if (widgetWidth <= 5) {
+        cols = 3;
+    } else {
+        cols = Math.min(6, Math.floor(widgetWidth * 0.8));
+    }
+
+    // Calculer l'espace réel disponible (en prenant en compte le padding et le texte)
+    // On estime qu'un élément prend environ 1.3x la hauteur d'une cellule de grille
+    const itemHeightRatio = 1.3;
+    const effectiveRows = Math.floor(widgetHeight / itemHeightRatio);
+    const maxCapacity = cols * Math.max(1, effectiveRows);
+
+    // Déterminer si on peut afficher le bouton d'ajout (avec marge de sécurité)
+    const canShowAddButton = (numBookmarks + 1) <= maxCapacity;
+    const totalItems = canShowAddButton ? numBookmarks + 1 : numBookmarks;
+
+    // Calculer le nombre de lignes nécessaires
+    const rows = Math.ceil(totalItems / cols);
+    const availableRows = widgetHeight;
+
+    // Si on dépasse l'espace disponible, adapter
+    let finalCols = cols;
+    let iconSize = baseIconSize;
+
+    if (rows > availableRows) {
+        // Augmenter le nombre de colonnes pour tenir dans l'espace
+        finalCols = Math.ceil(totalItems / availableRows);
+
+        // Réduire la taille des icônes proportionnellement
+        const reductionFactor = finalCols / cols;
+        iconSize = Math.max(20, Math.floor(baseIconSize / Math.sqrt(reductionFactor)));
+    }
+
+    // Pour les widgets très larges et peu hauts (comme 24x1), forcer un affichage en ligne
+    if (widgetWidth > 10 && widgetHeight === 1) {
+        finalCols = totalItems;
+        // Adapter la taille en fonction de l'espace disponible
+        iconSize = Math.min(baseIconSize, Math.max(24, Math.floor((widgetWidth * 60) / totalItems)));
+    }
 
     let html = '<div class="bookmarks-container">';
-    html += `<div class="bookmarks-grid" style="grid-template-columns: repeat(${cols}, 1fr);">`;
+    html += `<div class="bookmarks-grid" data-widget-id="${data.id}" style="grid-template-columns: repeat(${finalCols}, 1fr); grid-auto-rows: min-content;">`;
 
+    // Afficher les favoris existants
     bookmarks.forEach((bookmark, index) => {
         html += `
             <div class="bookmark-item-wrapper">
                 <a href="${bookmark.url}" class="bookmark-item">
-                    <div class="bookmark-icon" style="width: ${iconSize}px; height: ${iconSize}px;">
+                    <div class="bookmark-icon" style="width: ${iconSize}px; height: ${iconSize}px; font-size: ${iconSize * 0.5}px;">
                         ${bookmark.icon ? (bookmark.icon.startsWith('http') ? `<img src="${bookmark.icon}" alt="${bookmark.name}">` : bookmark.icon) : bookmark.name.charAt(0).toUpperCase()}
                     </div>
-                    <span class="bookmark-name">${bookmark.name}</span>
+                    <span class="bookmark-name" style="font-size: ${Math.max(9, iconSize * 0.23)}px;">${bookmark.name}</span>
                 </a>
                 <div class="bookmark-controls">
                     <button class="bookmark-control-btn edit" data-index="${index}" data-widget-id="${data.id}">✏️</button>
@@ -460,10 +513,20 @@ function createBookmarksWidget(data) {
         `;
     });
 
-    html += '</div>';
-    html += '<div class="bookmarks-footer">';
-    html += `<button class="add-bookmark-btn" data-widget-id="${data.id}">+ Ajouter</button>`;
-    html += `<button class="config-bookmark-btn" data-widget-id="${data.id}">⚙️ Config</button>`;
+    // Ajouter une case vide avec un + en mode édition seulement s'il y a de la place
+    if (canShowAddButton) {
+        html += `
+            <div class="bookmark-item-wrapper add-bookmark-placeholder" data-widget-id="${data.id}">
+                <div class="bookmark-item bookmark-add-item">
+                    <div class="bookmark-icon" style="width: ${iconSize}px; height: ${iconSize}px;">
+                        <span class="add-icon" style="font-size: ${iconSize * 0.67}px;">+</span>
+                    </div>
+                    <span class="bookmark-name" style="font-size: ${Math.max(9, iconSize * 0.23)}px;">Ajouter</span>
+                </div>
+            </div>
+        `;
+    }
+
     html += '</div>';
     html += '</div>';
 
@@ -471,17 +534,15 @@ function createBookmarksWidget(data) {
 }
 
 function initBookmarksWidget(widget, data) {
-    const addBtn = widget.querySelector('.add-bookmark-btn');
-    const configBtn = widget.querySelector('.config-bookmark-btn');
+    // Gérer le bouton d'ajout (case avec +)
+    const addPlaceholder = widget.querySelector('.add-bookmark-placeholder');
+    if (addPlaceholder) {
+        addPlaceholder.addEventListener('click', () => {
+            openBookmarkModal(data.id);
+        });
+    }
 
-    addBtn.addEventListener('click', () => {
-        openBookmarkModal(data.id);
-    });
-
-    configBtn.addEventListener('click', () => {
-        openBookmarkConfigModal(data.id);
-    });
-
+    // Gérer les boutons d'édition et suppression
     widget.querySelectorAll('.bookmark-control-btn.edit').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
