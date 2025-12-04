@@ -367,9 +367,14 @@ body {
     background: rgba(15, 76, 117, 0.95);
 }
 
-.delete-btn:hover {
+.delete-btn {
     background: rgba(194, 54, 22, 0.95);
     border-color: #c23616;
+}
+
+.delete-btn:hover {
+    background: rgba(232, 65, 24, 0.95);
+    border-color: #e84118;
 }
 
 .color-btn:hover {
